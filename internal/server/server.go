@@ -53,8 +53,12 @@ func Setup(listen bool, existingConn *gorm.DB) (*http.Server, *gin.Engine) {
 	corsConfig.AddAllowMethods("OPTIONS")
 	router.Use(cors.New(corsConfig))
 
-	// init routes
 	serverPort := os.Getenv("PORT")
+	if serverPort == "" {
+		serverPort = "5000"
+	}
+	
+	// init routes
 	controller.InitRoutes(router, existingConn)
 
 	// Serve app
