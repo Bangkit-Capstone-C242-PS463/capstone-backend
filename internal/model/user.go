@@ -7,10 +7,11 @@ import (
 )
 
 type User struct {
-	ID           string     `gorm:"primaryKey" json:"id"`
-	Username     string     `gorm:"unique;not null" json:"username"`
-	Password     *string    `json:"password"`
-	PasswordSalt *[]byte    `json:"password_salt"`
+	ID           string  `gorm:"primaryKey" json:"id"`
+	Username     string  `gorm:"unique;not null" json:"username"`
+	Password     *string `json:"password"`
+	PasswordSalt *[]byte `json:"password_salt"`
+	Name         string  `json:"name"`
 
 	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`
