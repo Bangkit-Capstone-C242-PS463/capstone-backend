@@ -15,7 +15,7 @@ func DetermineEnvName(env string) string {
 }
 
 func LoadEnvFile(fileName string) bool {
-	if err := godotenv.Load(fileName, ".env.dev"); err != nil {
+	if err := godotenv.Load(fileName, ".env.dev", ".env"); err != nil {
 		return false
 	}
 	return true
