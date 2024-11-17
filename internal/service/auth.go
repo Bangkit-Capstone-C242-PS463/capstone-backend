@@ -68,6 +68,7 @@ func (s authService) SignUp(ctx context.Context, req dto.SignUpRequest) error {
 	newUser := model.User{
 		ID:           userID,
 		Username:     req.Username,
+		Name:         req.Name,
 		Password:     &pw,
 		PasswordSalt: &salt,
 	}
@@ -102,9 +103,10 @@ func (s authService) Login(ctx context.Context, req dto.LoginRequest) (*dto.Logi
 		}
 
 		return &dto.LoginResponse{
-			ID:            result.ID,
-			Username:      result.Username,
-			AccessToken:   token,
+			ID:          result.ID,
+			Username:    result.Username,
+			Name:        result.Name,
+			AccessToken: token,
 		}, nil
 
 	} else {
