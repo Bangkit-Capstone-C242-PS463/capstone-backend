@@ -18,7 +18,7 @@ type UserRepository interface {
 	Tx(db *gorm.DB) UserRepository
 
 	Create(ctx context.Context, user model.User) error
-	GetOneByUsername(ctx context.Context, username string) (*model.User, error)
+	GetOneByEmail(ctx context.Context, email string) (*model.User, error)
 }
 
 func NewUserRepository(logger *zap.Logger, db *gorm.DB) userRepository {
@@ -33,14 +33,14 @@ func (r userRepository) Tx(db *gorm.DB) UserRepository {
 	return r
 }
 
-func (r userRepository) Create(ctx context.Context, user model.User) error {	
+func (r userRepository) Create(ctx context.Context, user model.User) error {
 	return r.db.WithContext(ctx).Create(&user).Error
 }
 
-func (u userRepository) GetOneByUsername(ctx context.Context, username string) (*model.User, error) {
+func (u userRepository) GetOneByEmail(ctx context.Context, email string) (*model.User, error) {
 	var result model.User
 	query := u.db.WithContext(ctx)
-	query = query.Where("LOWER(username) = LOWER(?)", username)
+	query = query.Where("LOWER(email) = LOWER(?)", email)
 
 	if err := query.First(&result).Error; err != nil {
 		return nil, err

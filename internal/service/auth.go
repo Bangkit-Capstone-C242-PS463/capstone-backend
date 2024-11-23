@@ -43,12 +43,12 @@ func (s authService) Tx(db *gorm.DB) authService {
 }
 
 func (s authService) SignUp(ctx context.Context, req dto.SignUpRequest) error {
-	s.logger.Info("user signup", zap.String("username", req.Username))
+	s.logger.Info("user signup", zap.String("email", req.Email))
 
 	// Check if user exists
-	existingUser, errUser := s.ur.GetOneByUsername(ctx, req.Username)
+	existingUser, errUser := s.ur.GetOneByEmail(ctx, req.Email)
 	if errUser != nil && !errors.Is(errUser, gorm.ErrRecordNotFound) {
-		s.logger.Error("failed to check username", zap.Error(errUser))
+		s.logger.Error("failed to check email", zap.Error(errUser))
 		return errUser
 	}
 	if existingUser != nil {
@@ -67,7 +67,7 @@ func (s authService) SignUp(ctx context.Context, req dto.SignUpRequest) error {
 
 	newUser := model.User{
 		ID:           userID,
-		Username:     req.Username,
+		Email:        req.Email,
 		Name:         req.Name,
 		Password:     &pw,
 		PasswordSalt: &salt,
@@ -82,12 +82,12 @@ func (s authService) SignUp(ctx context.Context, req dto.SignUpRequest) error {
 }
 
 func (s authService) Login(ctx context.Context, req dto.LoginRequest) (*dto.LoginResponse, error) {
-	s.logger.Info("user login", zap.String("username", req.Username))
+	s.logger.Info("user login", zap.String("email", req.Email))
 
-	result, err := s.ur.GetOneByUsername(ctx, req.Username)
+	result, err := s.ur.GetOneByEmail(ctx, req.Email)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			s.logger.Error("username not found", zap.Error(err))
+			s.logger.Error("email not found", zap.Error(err))
 			return nil, customErr.ErrUserNotFound
 		}
 		s.logger.Error("failed to get user", zap.Error(err))
@@ -104,7 +104,7 @@ func (s authService) Login(ctx context.Context, req dto.LoginRequest) (*dto.Logi
 
 		return &dto.LoginResponse{
 			ID:          result.ID,
-			Username:    result.Username,
+			Email:       result.Email,
 			Name:        result.Name,
 			AccessToken: token,
 		}, nil
