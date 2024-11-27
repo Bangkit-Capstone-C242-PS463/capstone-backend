@@ -6,6 +6,7 @@ import (
 
 	"capstone-backend/internal/controller/health"
 	"capstone-backend/internal/controller/auth"
+	"capstone-backend/internal/controller/user"
 	"capstone-backend/internal/db"
 	"capstone-backend/internal/logger"
 	"capstone-backend/internal/repository"
@@ -30,6 +31,7 @@ func InitRoutes(router *gin.Engine, conn *gorm.DB) {
 	// Initialise services.
 	hs := service.NewHealthService(log, hr)
 	as := service.NewAuthService(log, ur)
+	us := service.NewUserService(log, ur)
 
 	// Initialise controllers.
 	hCtrl := health.NewController(log, hs)
@@ -37,4 +39,7 @@ func InitRoutes(router *gin.Engine, conn *gorm.DB) {
 
 	authCtrl := auth.NewController(log, as)
 	authCtrl.Setup(r, db)
+
+	userCtrl := user.NewController(log, us)
+	userCtrl.Setup(r, db)
 }
