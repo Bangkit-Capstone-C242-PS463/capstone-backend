@@ -44,8 +44,8 @@ func JWTMiddleware() gin.HandlerFunc {
 		}
 
 		// Extract user_id
-		if userID, ok := claims[constants.CONTEXT_USERID_KEY].(float64); ok {
-			c.Set(constants.CONTEXT_USERID_KEY, int64(userID))
+		if userID, ok := claims[constants.CONTEXT_USERID_KEY].(string); ok {
+			c.Set(constants.CONTEXT_USERID_KEY, userID)
 		} else {
 			c.JSON(http.StatusUnauthorized, dto.ErrorResponse{
 				Message: "invalid token claims",
