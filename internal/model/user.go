@@ -17,3 +17,12 @@ type User struct {
 	UpdatedAt time.Time      `json:"updated_at"`
 	DeletedAt gorm.DeletedAt `json:"deleted_at,omitempty"`
 }
+
+type History struct {
+	ID     string `gorm:"primaryKey" json:"id"`
+	UserID string `json:"user_id"`
+	Result string `json:"result"`
+
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}

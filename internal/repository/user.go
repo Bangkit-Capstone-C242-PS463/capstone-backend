@@ -19,6 +19,9 @@ type UserRepository interface {
 
 	Create(ctx context.Context, user model.User) error
 	GetOneByEmail(ctx context.Context, email string) (*model.User, error)
+	GetUserHistoryByUserID(ctx context.Context, userID string) ([]model.History, error)
+	CreateHistory(ctx context.Context, history *model.History) error
+	DeleteHistoryByID(ctx context.Context, id string) error
 }
 
 func NewUserRepository(logger *zap.Logger, db *gorm.DB) userRepository {
@@ -46,4 +49,26 @@ func (u userRepository) GetOneByEmail(ctx context.Context, email string) (*model
 		return nil, err
 	}
 	return &result, nil
+}
+
+func (u userRepository) GetUserHistoryByUserID(ctx context.Context, userID string) (histories []model.History, err error) {
+	if err := u.db.WithContext(ctx).Where("user_id = ?", userID).Find(&histories).Error; err != nil {
+		return nil, err
+	}
+	return histories, nil
+}
+
+func (u userRepository) CreateHistory(ctx context.Context, history *model.History) error {
+	if err := u.db.WithContext(ctx).Create(history).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func (u userRepository) DeleteHistoryByID(ctx context.Context, id string) error {
+	if err := u.db.WithContext(ctx).Unscoped().Where("id = ?", id).Delete(&model.History{}).Error; err != nil {
+		return err
+	}
+	
+	return nil
 }
