@@ -1,18 +1,18 @@
 package auth
 
 import (
-	"net/http"
 	"errors"
+	"net/http"
 
-	"go.uber.org/zap"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 
-	"capstone-backend/internal/service"
-	"capstone-backend/internal/constants"
-	"capstone-backend/internal/middleware"
 	"capstone-backend/dto"
+	"capstone-backend/internal/constants"
 	customErr "capstone-backend/internal/errors"
+	"capstone-backend/internal/middleware"
+	"capstone-backend/internal/service"
 )
 
 type Controller struct {
@@ -27,6 +27,18 @@ func NewController(
 	return &Controller{logger, auth}
 }
 
+// SignUp godoc
+// @Summary      Sign up a new user
+// @Description  Registers a new user in the system.
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Param        user  body     dto.SignUpRequest   true  "User registration details"
+// @Success      200   {object} dto.SuccessResponse "Sign-up success status"
+// @Failure      400   {object} dto.ErrorResponse   "Bad Request - Invalid input"
+// @Failure      409   {object} dto.ErrorResponse   "Conflict - User already exists"
+// @Failure      500   {object} dto.ErrorResponse   "Internal Server Error - Sign-up failed"
+// @Router       /v1/auth/signup [post]
 func (ctrl *Controller) SignUp(c *gin.Context) {
 	var req dto.SignUpRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -58,6 +70,18 @@ func (ctrl *Controller) SignUp(c *gin.Context) {
 	})
 }
 
+// Login godoc
+// @Summary      User login
+// @Description  Authenticates a user and returns a data upon successful login.
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        login  body     dto.LoginRequest  	true  "User login credentials"
+// @Success      200    {object} dto.LoginResponse  "Login success, returns user data"
+// @Failure      400    {object} dto.ErrorResponse  "Bad Request - Invalid input"
+// @Failure      401    {object} dto.ErrorResponse  "Unauthorized - Invalid credentials"
+// @Failure      404    {object} dto.ErrorResponse  "Not Found - User not found"
+// @Router       /v1/auth/login [post]
 func (ctrl *Controller) Login(c *gin.Context) {
 	var login dto.LoginRequest
 	if err := c.ShouldBindJSON(&login); err != nil {

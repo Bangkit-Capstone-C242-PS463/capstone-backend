@@ -23,6 +23,14 @@ func NewController(
 	return &Controller{logger, user}
 }
 
+// GetAllHistory godoc
+// @Summary      Get user diagnosis history
+// @Description  Retrieves the history of user diagnoses based on their submitted symptoms.
+// @Tags         history
+// @Produce      json
+// @Success      200   {object} dto.GetAllHistoryResponse  	"Diagnosis history retrieved successfully"
+// @Failure      500   {object} dto.ErrorResponse           "Internal Server Error - Failed to fetch history"
+// @Router       /v1/user/history [get]
 func (ctrl *Controller) GetAllHistory(c *gin.Context) {
 	resp, err := ctrl.user.GetUserHistory(c)
 	if err != nil {
@@ -39,6 +47,16 @@ func (ctrl *Controller) GetAllHistory(c *gin.Context) {
 	})
 }
 
+// DeleteHistory godoc
+// @Summary      Delete a diagnosis history record
+// @Description  Deletes a specific diagnosis history record by its ID.
+// @Tags         history
+// @Produce      json
+// @Param        history_id  query     string              true  "ID of the history record to delete"
+// @Success      200         {object}  dto.SuccessResponse "Deletion successful"
+// @Failure      400         {object}  dto.ErrorResponse   "Bad Request - Missing history_id"
+// @Failure      500         {object}  dto.ErrorResponse   "Internal Server Error - Failed to delete history"
+// @Router       /v1/user/history [delete]
 func (ctrl *Controller) DeleteHistory(c *gin.Context) {
 	historyID := c.Query("history_id")
 	if historyID == "" {

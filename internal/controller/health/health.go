@@ -19,6 +19,13 @@ func NewController(
 	return &Controller{logger, hs}
 }
 
+// GetServerHealth godoc
+// @Summary      Get server health status
+// @Description  Returns the current health status of the server.
+// @Tags         health
+// @Produce      json
+// @Success      200  {object}  dto.ServerHealthResponse "Server is healthy"
+// @Router       /v1/health [get]
 func (ctrl *Controller) GetServerHealth(c *gin.Context) {
 	ctrl.logger.Info("Checking server health...")
 	c.JSON(200, gin.H{

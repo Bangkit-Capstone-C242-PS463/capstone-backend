@@ -9,8 +9,8 @@ type ErrorResponse struct {
 	Error   string `json:"error,omitempty"`
 }
 
-var SuccessResponse = Response{
-	Message: "success",
+type SuccessResponse struct {
+	Success string `json:"success" example:"true"`
 }
 
 // var TimeoutResponse = ErrorResponse{

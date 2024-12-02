@@ -24,3 +24,6 @@ migrate-up:
 migrate-down:
 	$(call setup_env,$(project_file))
 	migrate -path db/migrations -database "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}" down 1
+
+generate-docs:
+	swag init -g internal/controller/router.go
