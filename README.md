@@ -31,3 +31,17 @@ To roll back the most recent migration:
 ```bash
 make migrate-down
 ```
+
+### API Documentation
+#### Generating API Documentation
+If you add a new endpoint or update Swagger annotations, you can regenerate the API documentation using the following command:
+```bash
+make generate-docs
+```
+
+#### Accessing API Documentation
+Once the application is running, the API documentation is available at:
+```bash
+/api/v1/swagger/index.html
+```
+Open this URL in your browser to view the Swagger UI and explore the available endpoints.
