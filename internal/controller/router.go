@@ -3,7 +3,10 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-
+	"github.com/swaggo/gin-swagger"
+	"github.com/swaggo/files"
+	
+	"capstone-backend/docs"
 	"capstone-backend/internal/controller/health"
 	"capstone-backend/internal/controller/auth"
 	"capstone-backend/internal/controller/user"
@@ -23,6 +26,14 @@ func InitRoutes(router *gin.Engine, conn *gorm.DB) {
 	}
 
 	r := router.Group("/api")
+
+	// Programmatically set swagger info
+	docs.SwaggerInfo.Title = "InSight API"
+	docs.SwaggerInfo.Description = "Comprehensive documentation for the InSight API."
+	docs.SwaggerInfo.Version = "1.0"
+	docs.SwaggerInfo.BasePath = "/api"
+	docs.SwaggerInfo.Schemes = []string{"http", "https"}
+	r.GET("/v1/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Initialise repositories.
 	hr := repository.NewHealthRepository(log, db)

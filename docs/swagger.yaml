@@ -1,0 +1,196 @@
+definitions:
+  dto.ErrorResponse:
+    properties:
+      error:
+        type: string
+      message:
+        type: string
+    type: object
+  dto.GetAllHistoryResponse:
+    properties:
+      history:
+        items:
+          $ref: '#/definitions/dto.History'
+        type: array
+    type: object
+  dto.History:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      result:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
+  dto.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  dto.LoginResponse:
+    properties:
+      access_token:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  dto.ServerHealthResponse:
+    properties:
+      status:
+        example: healthy
+        type: string
+    type: object
+  dto.SignUpRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    type: object
+  dto.SuccessResponse:
+    properties:
+      success:
+        example: "true"
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticates a user and returns a data upon successful login.
+      parameters:
+      - description: User login credentials
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Login success, returns user data
+          schema:
+            $ref: '#/definitions/dto.LoginResponse'
+        "400":
+          description: Bad Request - Invalid input
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized - Invalid credentials
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "404":
+          description: Not Found - User not found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: User login
+      tags:
+      - auth
+  /v1/auth/signup:
+    post:
+      consumes:
+      - application/json
+      description: Registers a new user in the system.
+      parameters:
+      - description: User registration details
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SignUpRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Sign-up success status
+          schema:
+            $ref: '#/definitions/dto.SuccessResponse'
+        "400":
+          description: Bad Request - Invalid input
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "409":
+          description: Conflict - User already exists
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error - Sign-up failed
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Sign up a new user
+      tags:
+      - users
+  /v1/health:
+    get:
+      description: Returns the current health status of the server.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Server is healthy
+          schema:
+            $ref: '#/definitions/dto.ServerHealthResponse'
+      summary: Get server health status
+      tags:
+      - health
+  /v1/user/history:
+    delete:
+      description: Deletes a specific diagnosis history record by its ID.
+      parameters:
+      - description: ID of the history record to delete
+        in: query
+        name: history_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Deletion successful
+          schema:
+            $ref: '#/definitions/dto.SuccessResponse'
+        "400":
+          description: Bad Request - Missing history_id
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error - Failed to delete history
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Delete a diagnosis history record
+      tags:
+      - history
+    get:
+      description: Retrieves the history of user diagnoses based on their submitted
+        symptoms.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Diagnosis history retrieved successfully
+          schema:
+            $ref: '#/definitions/dto.GetAllHistoryResponse'
+        "500":
+          description: Internal Server Error - Failed to fetch history
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get user diagnosis history
+      tags:
+      - history
+swagger: "2.0"
