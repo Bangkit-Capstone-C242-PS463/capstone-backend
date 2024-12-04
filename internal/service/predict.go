@@ -1,3 +1,5 @@
+// internal/service/predict_service.go
+
 package service
 
 import (
@@ -17,11 +19,15 @@ type PredictService interface {
 }
 
 type predictService struct {
-	logger *zap.Logger
+	logger      *zap.Logger
+	userService UserService
 }
 
-func NewPredictService(logger *zap.Logger) PredictService {
-	return &predictService{logger}
+func NewPredictService(logger *zap.Logger, userService UserService) PredictService {
+	return &predictService{
+		logger:      logger,
+		userService: userService,
+	}
 }
 
 func (s *predictService) callPredictEndpoint(url string, data interface{}) (dto.PredictResponse, error) {
@@ -48,13 +54,33 @@ func (s *predictService) callPredictEndpoint(url string, data interface{}) (dto.
 }
 
 func (s *predictService) Predict(ctx context.Context, req dto.PredictRequest) (dto.PredictResponse, error) {
-	// adjust the url later
 	url := "http://localhost:8000/predict"
-	return s.callPredictEndpoint(url, req)
+	response, err := s.callPredictEndpoint(url, req)
+	if err != nil {
+		return dto.PredictResponse{}, err
+	}
+
+	// Save history using UserService
+	err = s.userService.CreateHistory(ctx, response.PredictedDisease)
+	if err != nil {
+		s.logger.Error("Failed to create history", zap.Error(err))
+	}
+
+	return response, nil
 }
 
 func (s *predictService) PredictManual(ctx context.Context, req dto.PredictManualRequest) (dto.PredictResponse, error) {
-	// adjust the url later
 	url := "http://localhost:8000/predict_manual"
-	return s.callPredictEndpoint(url, req)
+	response, err := s.callPredictEndpoint(url, req)
+	if err != nil {
+		return dto.PredictResponse{}, err
+	}
+
+	// Save history using UserService
+	err = s.userService.CreateHistory(ctx, response.PredictedDisease)
+	if err != nil {
+		s.logger.Error("Failed to create history", zap.Error(err))
+	}
+
+	return response, nil
 }

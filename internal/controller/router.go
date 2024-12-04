@@ -45,7 +45,7 @@ func InitRoutes(router *gin.Engine, conn *gorm.DB) {
 	hs := service.NewHealthService(log, hr)
 	as := service.NewAuthService(log, ur)
 	us := service.NewUserService(log, ur)
-	ps := service.NewPredictService(log)
+	ps := service.NewPredictService(log, us)
 
 	// Initialise controllers.
 	hCtrl := health.NewController(log, hs)
