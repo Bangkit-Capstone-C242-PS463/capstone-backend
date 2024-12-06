@@ -44,6 +44,27 @@ definitions:
       name:
         type: string
     type: object
+  dto.PredictManualRequest:
+    properties:
+      symptoms:
+        items:
+          type: string
+        type: array
+    type: object
+  dto.PredictRequest:
+    properties:
+      user_story:
+        type: string
+    type: object
+  dto.PredictResponse:
+    properties:
+      identified_symptoms:
+        items:
+          type: string
+        type: array
+      predicted_disease:
+        type: string
+    type: object
   dto.ServerHealthResponse:
     properties:
       status:
@@ -149,6 +170,66 @@ paths:
       summary: Get server health status
       tags:
       - health
+  /v1/predict:
+    post:
+      consumes:
+      - application/json
+      description: Predicts the disease based on the provided user story.
+      parameters:
+      - description: User story for prediction
+        in: body
+        name: user_story
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PredictRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Prediction successful
+          schema:
+            $ref: '#/definitions/dto.PredictResponse'
+        "400":
+          description: Bad Request - Invalid input
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error - Failed to predict
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Predict disease based on user story
+      tags:
+      - prediction
+  /v1/predict_manual:
+    post:
+      consumes:
+      - application/json
+      description: Predicts the disease based on the provided symptoms.
+      parameters:
+      - description: Symptoms for prediction
+        in: body
+        name: symptoms
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PredictManualRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Prediction successful
+          schema:
+            $ref: '#/definitions/dto.PredictResponse'
+        "400":
+          description: Bad Request - Invalid input
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error - Failed to predict
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Predict disease based on symptoms
+      tags:
+      - prediction
   /v1/user/history:
     delete:
       description: Deletes a specific diagnosis history record by its ID.

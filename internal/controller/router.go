@@ -2,14 +2,16 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"gorm.io/gorm"
-	"github.com/swaggo/gin-swagger"
-	"github.com/swaggo/files"
-	
+
 	"capstone-backend/docs"
-	"capstone-backend/internal/controller/health"
 	"capstone-backend/internal/controller/auth"
+	"capstone-backend/internal/controller/health"
+	"capstone-backend/internal/controller/predict"
 	"capstone-backend/internal/controller/user"
+
 	"capstone-backend/internal/db"
 	"capstone-backend/internal/logger"
 	"capstone-backend/internal/repository"
@@ -43,6 +45,7 @@ func InitRoutes(router *gin.Engine, conn *gorm.DB) {
 	hs := service.NewHealthService(log, hr)
 	as := service.NewAuthService(log, ur)
 	us := service.NewUserService(log, ur)
+	ps := service.NewPredictService(log, us)
 
 	// Initialise controllers.
 	hCtrl := health.NewController(log, hs)
@@ -53,4 +56,7 @@ func InitRoutes(router *gin.Engine, conn *gorm.DB) {
 
 	userCtrl := user.NewController(log, us)
 	userCtrl.Setup(r, db)
+
+	pCtrl := predict.NewPredictController(log, ps)
+	pCtrl.Setup(r)
 }
