@@ -9,6 +9,7 @@ import (
 	"net/http"
 
 	"capstone-backend/dto"
+	"capstone-backend/internal/constants"
 
 	"go.uber.org/zap"
 )
@@ -54,8 +55,7 @@ func (s *predictService) callPredictEndpoint(url string, data interface{}) (dto.
 }
 
 func (s *predictService) Predict(ctx context.Context, req dto.PredictRequest) (dto.PredictResponse, error) {
-	url := "http://localhost:8000/predict"
-	response, err := s.callPredictEndpoint(url, req)
+	response, err := s.callPredictEndpoint(constants.MODEL_PREDICT_URL, req)
 	if err != nil {
 		return dto.PredictResponse{}, err
 	}
@@ -70,8 +70,7 @@ func (s *predictService) Predict(ctx context.Context, req dto.PredictRequest) (d
 }
 
 func (s *predictService) PredictManual(ctx context.Context, req dto.PredictManualRequest) (dto.PredictResponse, error) {
-	url := "http://localhost:8000/predict_manual"
-	response, err := s.callPredictEndpoint(url, req)
+	response, err := s.callPredictEndpoint(constants.MODEL_PREDICT_MANUAL_URL, req)
 	if err != nil {
 		return dto.PredictResponse{}, err
 	}

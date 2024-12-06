@@ -45,7 +45,7 @@ func (ctrl *PredictController) Predict(c *gin.Context) {
 		return
 	}
 
-	response, err := ctrl.predictService.Predict(c.Request.Context(), req)
+	response, err := ctrl.predictService.Predict(c, req)
 	if err != nil {
 		ctrl.logger.Error("Prediction service error", zap.Error(err))
 		c.JSON(http.StatusInternalServerError, dto.ErrorResponse{
@@ -80,7 +80,7 @@ func (ctrl *PredictController) PredictManual(c *gin.Context) {
 		return
 	}
 
-	response, err := ctrl.predictService.PredictManual(c.Request.Context(), req)
+	response, err := ctrl.predictService.PredictManual(c, req)
 	if err != nil {
 		ctrl.logger.Error("Prediction service error", zap.Error(err))
 		c.JSON(http.StatusInternalServerError, dto.ErrorResponse{
