@@ -2,6 +2,7 @@
 InSight API service
 
 ## InSight API Documentation
+### Base URL: `<BASE_URL>/api`
 | Method | Endpoint                 | Summary                                | Description                                                             | Request Body                       | Response                     |
 |--------|--------------------------|----------------------------------------|-------------------------------------------------------------------------|------------------------------------|------------------------------|
 | POST   | `/v1/auth/login`         | User login                             | Authenticates a user and returns data upon successful login.            | `dto.LoginRequest`                | `dto.LoginResponse`          |
